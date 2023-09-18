@@ -34,9 +34,12 @@ let main argv =
     printfn "Cliente en ejecución"
     while true do
         printfn "Comandos disponibles:"
-        printfn "1. Agregar canción (add|título|artista)"
+        printfn "1. Agregar canción (add|título|artista|nombre de archivo)"
         printfn "2. Listar canciones (list)"
-        printfn "3. Salir"
+        printfn "3. Búsqueda por título"
+        printfn "4. Búsqueda por artista"
+        printfn "5. Búsqueda por nombre de archivo"
+        printfn "6. Salir"
         printf "> "
 
         let input = Console.ReadLine()
@@ -46,12 +49,29 @@ let main argv =
             let title = Console.ReadLine()
             printfn "Ingrese el artista de la canción:"
             let artist = Console.ReadLine()
-            let request = sprintf "add|%s|%s" title artist
+            printfn "Ingrese el nombre de archivo de la canción:"
+            let fileName = Console.ReadLine()
+            let request = sprintf "add|%s|%s|%s" title artist fileName
             sendRequestToServer serverIP serverPort request
         | "2" ->
             let request = "list"
             sendRequestToServer serverIP serverPort request
         | "3" ->
+            printfn "Búsqueda por título (Ingrese el título):"
+            let title = Console.ReadLine()
+            let request = sprintf "searchTitle|%s" title
+            sendRequestToServer serverIP serverPort request
+        | "4" ->
+            printfn "Búsqueda por artista (Ingrese el artista):"
+            let artist = Console.ReadLine()
+            let request = sprintf "searchArtist|%s" artist
+            sendRequestToServer serverIP serverPort request
+        | "5" ->
+            printfn "Búsqueda por nombre de archivo (Ingrese el nombre de archivo):"
+            let fileName = Console.ReadLine()
+            let request = sprintf "searchFileName|%s" fileName
+            sendRequestToServer serverIP serverPort request
+        | "6" ->
             printfn "Saliendo del cliente."
             Environment.Exit(0)
         | _ ->
