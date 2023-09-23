@@ -6,6 +6,7 @@ open System.Net.Sockets
 open System.Text
 open System.Net.Http
 open System.Net.Http.Headers
+open Newtonsoft.Json
 
 module lib =
 
@@ -36,30 +37,41 @@ module lib =
             ""
     
 
-    let sendRequestWithFileToServer (serverIP: string) (serverPort: int) (request: string) (filePath: string) =
+
+// Define una estructura para representar una canción en F#
+    type SongInfo =
+        {
+            ID: int
+            Title: string
+            Artist: string
+        }
+
+// ...
+
+    let sendRequestToServerList (serverIP: string) (serverPort: int) (request: string) =      
         try
-            use httpClient = new HttpClient()
-        
-            // Construir un objeto MultipartFormDataContent para enviar la solicitud con un archivo adjunto
-            let content = new MultipartFormDataContent()
-            let fileContent = new ByteArrayContent(File.ReadAllBytes(filePath))
-            fileContent.Headers.ContentDisposition <- new ContentDispositionHeaderValue("form-data")
-            fileContent.Headers.ContentDisposition.Name <- "\"file\""
-            fileContent.Headers.ContentDisposition.FileName <- "\"" + Path.GetFileName(filePath) + "\""
-            content.Add(fileContent)
+            let client = new TcpClient(serverIP, serverPort)
+            let stream = client.GetStream()
+            let writer = new StreamWriter(stream, Encoding.ASCII)
+            let reader = new StreamReader(stream, Encoding.UTF8)
 
-            // Agregar otros datos de la solicitud, como el comando y los detalles de la canción
-            content.Add(new StringContent(request), "command")
+            writer.WriteLine(request)
+            writer.Flush()
 
-            // Realizar la solicitud POST al servidor Go
-            let response = httpClient.PostAsync($"http://{serverIP}:{serverPort}/endpoint", content).Result
-        
-            // Leer la respuesta del servidor Go
-            let responseBody = response.Content.ReadAsStringAsync().Result
-            responseBody
+            // Leer la respuesta del servidor como una cadena JSON y deserializarla en una lista de canciones
+            let responseJson = reader.ReadToEnd()
+            let songs = JsonConvert.DeserializeObject<SongInfo list>(responseJson)
+
+            client.Close()
+
+            // Devolver la lista de canciones como resultado de la función
+            songs
         with
+        | :? SocketException as ex ->
+            printfn "Error de conexión al servidor: %s" ex.Message
+            // Puedes manejar el error aquí si es necesario
+            []
         | ex ->
             printfn "Error inesperado: %s" ex.Message
-            // Puedes manejar el error aquí si es necesarios
-            ""
-
+            // Puedes manejar el error aquí si es necesario
+            []

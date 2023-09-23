@@ -34,9 +34,9 @@
             btn_Archivo = new Button();
             btn_bArtista = new Button();
             btn_bTitulo = new Button();
-            btn_AgregarC = new Button();
             btn_Restablecer = new Button();
             textBox1 = new TextBox();
+            btn_AgregarC = new Button();
             textBox2 = new TextBox();
             panel2 = new Panel();
             lbl_Artista = new Label();
@@ -51,6 +51,12 @@
             button2 = new Button();
             lbl_sReproduccion = new Label();
             textBox3 = new TextBox();
+            panel5 = new Panel();
+            label3 = new Label();
+            label2 = new Label();
+            txtTitulo = new TextBox();
+            txtArtista = new TextBox();
+            dataGridView1 = new DataGridView();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
@@ -58,21 +64,23 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             panel3.SuspendLayout();
             panel4.SuspendLayout();
+            panel5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
             // panel1
             // 
             panel1.BackColor = Color.FromArgb(242, 249, 255);
+            panel1.Controls.Add(dataGridView1);
             panel1.Controls.Add(lbl_Busqueda);
             panel1.Controls.Add(btn_Archivo);
             panel1.Controls.Add(btn_bArtista);
             panel1.Controls.Add(btn_bTitulo);
-            panel1.Controls.Add(btn_AgregarC);
             panel1.Controls.Add(btn_Restablecer);
             panel1.Controls.Add(textBox1);
             panel1.Location = new Point(12, 12);
             panel1.Name = "panel1";
-            panel1.Size = new Size(537, 553);
+            panel1.Size = new Size(537, 753);
             panel1.TabIndex = 5;
             // 
             // lbl_Busqueda
@@ -112,15 +120,6 @@
             btn_bTitulo.Text = "Titulo";
             btn_bTitulo.UseVisualStyleBackColor = true;
             // 
-            // btn_AgregarC
-            // 
-            btn_AgregarC.Location = new Point(398, 10);
-            btn_AgregarC.Name = "btn_AgregarC";
-            btn_AgregarC.Size = new Size(136, 29);
-            btn_AgregarC.TabIndex = 3;
-            btn_AgregarC.Text = "Agregar Cancion";
-            btn_AgregarC.UseVisualStyleBackColor = true;
-            // 
             // btn_Restablecer
             // 
             btn_Restablecer.Location = new Point(113, 10);
@@ -138,6 +137,16 @@
             textBox1.Size = new Size(230, 27);
             textBox1.TabIndex = 0;
             // 
+            // btn_AgregarC
+            // 
+            btn_AgregarC.Location = new Point(392, 84);
+            btn_AgregarC.Name = "btn_AgregarC";
+            btn_AgregarC.Size = new Size(136, 29);
+            btn_AgregarC.TabIndex = 3;
+            btn_AgregarC.Text = "Agregar Cancion";
+            btn_AgregarC.UseVisualStyleBackColor = true;
+            btn_AgregarC.Click += btn_AgregarC_Click;
+            // 
             // textBox2
             // 
             textBox2.Location = new Point(10, 40);
@@ -153,9 +162,9 @@
             panel2.Controls.Add(pictureBox3);
             panel2.Controls.Add(pictureBox2);
             panel2.Controls.Add(pictureBox1);
-            panel2.Location = new Point(12, 571);
+            panel2.Location = new Point(555, 771);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1174, 125);
+            panel2.Size = new Size(631, 125);
             panel2.TabIndex = 6;
             // 
             // lbl_Artista
@@ -181,7 +190,7 @@
             // pictureBox3
             // 
             pictureBox3.Image = Properties.Resources.Avanzar;
-            pictureBox3.Location = new Point(659, 13);
+            pictureBox3.Location = new Point(533, 24);
             pictureBox3.Name = "pictureBox3";
             pictureBox3.Size = new Size(75, 75);
             pictureBox3.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -191,7 +200,7 @@
             // pictureBox2
             // 
             pictureBox2.Image = Properties.Resources.Retroceder;
-            pictureBox2.Location = new Point(447, 13);
+            pictureBox2.Location = new Point(321, 24);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(75, 75);
             pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -201,7 +210,7 @@
             // pictureBox1
             // 
             pictureBox1.Image = Properties.Resources.pause;
-            pictureBox1.Location = new Point(553, 13);
+            pictureBox1.Location = new Point(431, 24);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(75, 75);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -218,7 +227,7 @@
             panel3.Controls.Add(textBox2);
             panel3.Location = new Point(555, 12);
             panel3.Name = "panel3";
-            panel3.Size = new Size(313, 553);
+            panel3.Size = new Size(313, 753);
             panel3.TabIndex = 6;
             // 
             // button1
@@ -249,7 +258,7 @@
             panel4.Controls.Add(textBox3);
             panel4.Location = new Point(874, 12);
             panel4.Name = "panel4";
-            panel4.Size = new Size(312, 553);
+            panel4.Size = new Size(312, 753);
             panel4.TabIndex = 6;
             // 
             // button2
@@ -278,12 +287,71 @@
             textBox3.Size = new Size(150, 27);
             textBox3.TabIndex = 10;
             // 
+            // panel5
+            // 
+            panel5.BackColor = Color.FromArgb(242, 249, 255);
+            panel5.Controls.Add(label3);
+            panel5.Controls.Add(label2);
+            panel5.Controls.Add(txtTitulo);
+            panel5.Controls.Add(txtArtista);
+            panel5.Controls.Add(btn_AgregarC);
+            panel5.Location = new Point(12, 771);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(537, 125);
+            panel5.TabIndex = 7;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            label3.Location = new Point(171, 51);
+            label3.Name = "label3";
+            label3.Size = new Size(69, 28);
+            label3.TabIndex = 12;
+            label3.Text = "Artista";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            label2.Location = new Point(171, 13);
+            label2.Name = "label2";
+            label2.Size = new Size(62, 28);
+            label2.TabIndex = 8;
+            label2.Text = "Título";
+            // 
+            // txtTitulo
+            // 
+            txtTitulo.Location = new Point(274, 13);
+            txtTitulo.Name = "txtTitulo";
+            txtTitulo.Size = new Size(254, 27);
+            txtTitulo.TabIndex = 11;
+            // 
+            // txtArtista
+            // 
+            txtArtista.Location = new Point(274, 51);
+            txtArtista.Name = "txtArtista";
+            txtArtista.Size = new Size(254, 27);
+            txtArtista.TabIndex = 10;
+            // 
+            // dataGridView1
+            // 
+            dataGridView1.BackgroundColor = Color.FromArgb(5, 15, 34);
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Location = new Point(10, 84);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.RowHeadersWidth = 51;
+            dataGridView1.RowTemplate.Height = 29;
+            dataGridView1.Size = new Size(518, 666);
+            dataGridView1.TabIndex = 8;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(114, 120, 140);
-            ClientSize = new Size(1198, 708);
+            ClientSize = new Size(1198, 908);
+            Controls.Add(panel5);
             Controls.Add(panel4);
             Controls.Add(panel3);
             Controls.Add(panel2);
@@ -302,6 +370,9 @@
             panel3.PerformLayout();
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
+            panel5.ResumeLayout(false);
+            panel5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
         }
 
@@ -329,5 +400,11 @@
         private PictureBox pictureBox2;
         private Label lbl_Artista;
         private Label label1;
+        private Panel panel5;
+        private Label label3;
+        private Label label2;
+        private TextBox txtTitulo;
+        private TextBox txtArtista;
+        private DataGridView dataGridView1;
     }
 }

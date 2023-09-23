@@ -2,6 +2,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/faiface/beep"
 	"github.com/faiface/beep/mp3"
@@ -32,6 +33,12 @@ func main() {
 		}
 		go handleConnection(conn, server)
 	}
+}
+
+type Song2 struct {
+	ID     int    `json:"ID"`
+	Title  string `json:"Title"`
+	Artist string `json:"Artist"`
 }
 
 // Estructura para representar una canción
@@ -145,7 +152,7 @@ func handleConnection(conn net.Conn, server *Server) {
 func processClientRequest(request string, server *Server, player *Player) string {
 	parts := strings.Split(request, "|")
 	if len(parts) < 2 {
-		return "Comando no válido"
+		fmt.Println("Posible comando no válido")
 	}
 
 	command := parts[0]
@@ -165,10 +172,14 @@ func processClientRequest(request string, server *Server, player *Player) string
 		return "Canción agregada con éxito"
 	case "list":
 		songs := server.ListSongs()
-		if len(songs) == 0 {
-			return "No hay canciones registradas"
+		// Convierte la lista de canciones en JSON
+		songsJSON, err := json.Marshal(songs)
+
+		if err != nil {
+			return "Error al convertir la lista de canciones en JSON"
 		}
-		return formatSongsList(songs)
+		return string(songsJSON)
+		// Resto de casos...
 	case "searchTitle":
 		if len(params) != 1 {
 			return "Comando 'searchTitle' requiere un parámetro: título"
