@@ -29,7 +29,7 @@ namespace WinFormsApp2
         {
 
         }
-        //Tiene boton de play
+        //Tiene boton de play-
         bool PlayPausa = true;
         private void pictureBox1_Click(object sender, EventArgs e)
         {

@@ -60,6 +60,6 @@ module lib =
         with
         | ex ->
             printfn "Error inesperado: %s" ex.Message
-            // Puedes manejar el error aquí si es necesario
+            // Puedes manejar el error aquí si es necesarios
             ""
 
