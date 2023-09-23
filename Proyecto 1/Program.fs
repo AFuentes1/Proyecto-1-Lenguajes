@@ -5,73 +5,52 @@ open System.IO
 open System.Net
 open System.Net.Sockets
 open System.Text
+open System.Diagnostics
 
+// Función para enviar una solicitud al servidor (sin cambios)
 let sendRequestToServer (serverIP: string) (serverPort: int) (request: string) =
+    // ...
+
+// Función para reproducir una canción localmente
+let playSong (filePath: string) =
     try
-        let client = new TcpClient(serverIP, serverPort)
-        let stream = client.GetStream()
-        let writer = new StreamWriter(stream, Encoding.ASCII)
-        let reader = new StreamReader(stream, Encoding.ASCII)
-
-        writer.WriteLine(request)
-        writer.Flush()
-
-        let response = reader.ReadToEnd()
-        printfn "Respuesta del servidor:\n%s" response
-
-        client.Close()
+        let audioFilePath = Path.Combine(Environment.CurrentDirectory, filePath)
+        if File.Exists(audioFilePath) then
+            let psi = new ProcessStartInfo(audioFilePath)
+            psi.UseShellExecute <- true
+            Process.Start(psi) |> ignore
+        else
+            printfn "El archivo de audio no se encontró: %s" audioFilePath
     with
-    | :? SocketException as ex ->
-        printfn "Error de conexión al servidor: %s" ex.Message
-    | ex ->
-        printfn "Error inesperado: %s" ex.Message
+    | :? Exception as ex ->
+        Console.WriteLine("Error durante la reproducción: " + ex.Message)
+
+// Resto del código (sin cambios)
 
 [<EntryPoint>]
 let main argv =
-    let serverIP = "127.0.0.1" // Cambia a la dirección IP del servidor si es necesario
-    let serverPort = 12345 // El puerto del servidor
+    // ...
 
-    printfn "Cliente en ejecución"
     while true do
-        printfn "Comandos disponibles:"
-        printfn "1. Agregar canción (add|título|artista|nombre de archivo)"
-        printfn "2. Listar canciones (list)"
-        printfn "3. Búsqueda por título"
-        printfn "4. Búsqueda por artista"
-        printfn "5. Búsqueda por nombre de archivo"
-        printfn "6. Salir"
-        printf "> "
+        // ...
 
         let input = Console.ReadLine()
         match input with
         | "1" ->
-            printfn "Ingrese el título de la canción:"
-            let title = Console.ReadLine()
-            printfn "Ingrese el artista de la canción:"
-            let artist = Console.ReadLine()
-            printfn "Ingrese el nombre de archivo de la canción:"
-            let fileName = Console.ReadLine()
-            let request = sprintf "add|%s|%s|%s" title artist fileName
-            sendRequestToServer serverIP serverPort request
+            // ...
         | "2" ->
-            let request = "list"
-            sendRequestToServer serverIP serverPort request
+            // ...
         | "3" ->
-            printfn "Búsqueda por título (Ingrese el título):"
-            let title = Console.ReadLine()
-            let request = sprintf "searchTitle|%s" title
-            sendRequestToServer serverIP serverPort request
+            // ...
         | "4" ->
-            printfn "Búsqueda por artista (Ingrese el artista):"
-            let artist = Console.ReadLine()
-            let request = sprintf "searchArtist|%s" artist
-            sendRequestToServer serverIP serverPort request
+            // ...
         | "5" ->
-            printfn "Búsqueda por nombre de archivo (Ingrese el nombre de archivo):"
-            let fileName = Console.ReadLine()
-            let request = sprintf "searchFileName|%s" fileName
-            sendRequestToServer serverIP serverPort request
+            // ...
         | "6" ->
+            printfn "Ingrese el nombre del archivo de la canción a reproducir localmente:"
+            let fileName = Console.ReadLine()
+            playSong fileName
+        | "7" ->
             printfn "Saliendo del cliente."
             Environment.Exit(0)
         | _ ->

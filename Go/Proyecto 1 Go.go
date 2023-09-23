@@ -7,6 +7,12 @@ import (
 	"os"
 	"strings"
 	"sync"
+	"time"
+
+	"github.com/faiface/beep"
+	"github.com/faiface/beep/mp3"
+	"github.com/faiface/beep/speaker"
+	"github.com/faiface/beep/wav"
 )
 
 // Estructura para representar una canción
@@ -20,6 +26,12 @@ type Song struct {
 type Server struct {
 	songs []Song
 	mutex sync.Mutex
+}
+
+// Estructura para la reproducción de canciones
+type Player struct {
+	streamer beep.StreamSeekCloser
+	format   beep.Format
 }
 
 // Función para agregar una canción al servidor
@@ -75,6 +87,110 @@ func (s *Server) SearchByFileName(fileName string) []Song {
 	return result
 }
 
+// Función para iniciar la reproducción de una canción
+func (p *Player) StartPlayback() {
+	speaker.Init(p.format.SampleRate, p.format.SampleRate.N(time.Second/10))
+	speaker.Play(p.streamer)
+}
+package main
+
+import (
+"fmt"
+"net"
+"os"
+"strings"
+"sync"
+
+"github.com/faiface/beep"
+"github.com/faiface/beep/mp3"
+"github.com/faiface/beep/speaker"
+"github.com/faiface/beep/wav"
+"io"
+)
+
+// Estructura para representar una canción
+type Song struct {
+	Title    string
+	Artist   string
+	FileName string // Nombre del archivo de la canción
+}
+
+// Estructura para el servidor
+type Server struct {
+	songs []Song
+	mutex sync.Mutex
+}
+
+// Estructura para la reproducción de canciones
+type Player struct {
+	streamer beep.StreamSeekCloser
+	format   beep.Format
+}
+
+// Función para agregar una canción al servidor
+func (s *Server) AddSong(title, artist, fileName string) {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	s.songs = append(s.songs, Song{Title: title, Artist: artist, FileName: fileName})
+}
+
+// Función para listar las canciones del servidor
+func (s *Server) ListSongs() []Song {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	return s.songs
+}
+
+// Función para buscar canciones por título
+func (s *Server) SearchByTitle(title string) []Song {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	var result []Song
+	for _, song := range s.songs {
+		if strings.Contains(song.Title, title) {
+			result = append(result, song)
+		}
+	}
+	return result
+}
+
+// Función para buscar canciones por artista
+func (s *Server) SearchByArtist(artist string) []Song {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	var result []Song
+	for _, song := range s.songs {
+		if strings.Contains(song.Artist, artist) {
+			result = append(result, song)
+		}
+	}
+	return result
+}
+
+// Función para buscar canciones por nombre de archivo
+func (s *Server) SearchByFileName(fileName string) []Song {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	var result []Song
+	for _, song := range s.songs {
+		if strings.Contains(song.FileName, fileName) {
+			result = append(result, song)
+		}
+	}
+	return result
+}
+
+// Función para iniciar la reproducción de una canción
+func (p *Player) StartPlayback() {
+	speaker.Init(p.format.SampleRate, p.format.SampleRate.N(time.Second/10))
+	speaker.Play(p.streamer)
+}
+
+// Función para detener la reproducción de una canción
+func (p *Player) StopPlayback() {
+	speaker.Clear()
+}
+
 func main() {
 	server := &Server{}
 	listen, err := net.Listen("tcp", ":12345")
@@ -100,6 +216,8 @@ func handleConnection(conn net.Conn, server *Server) {
 	fmt.Println("Nueva conexión establecida")
 
 	buffer := make([]byte, 1024)
+	player := &Player{} // Crear un reproductor para la canción
+
 	for {
 		n, err := conn.Read(buffer)
 		if err != nil {
@@ -107,12 +225,12 @@ func handleConnection(conn net.Conn, server *Server) {
 			return
 		}
 		clientRequest := string(buffer[:n])
-		response := processClientRequest(clientRequest, server)
+		response := processClientRequest(clientRequest, server, player)
 		conn.Write([]byte(response))
 	}
 }
 
-func processClientRequest(request string, server *Server) string {
+func processClientRequest(request string, server *Server, player *Player) string {
 	parts := strings.Split(request, "|")
 	if len(parts) < 2 {
 		return "Comando no válido"
@@ -158,6 +276,19 @@ func processClientRequest(request string, server *Server) string {
 		fileName := params[0]
 		matchingSongs := server.SearchByFileName(fileName)
 		return formatSongsList(matchingSongs)
+	case "play":
+		if len(params) != 1 {
+			return "Comando 'play' requiere un parámetro: nombre de archivo de la canción"
+		}
+		fileName := params[0]
+		err := playSong(fileName, player)
+		if err != nil {
+			return fmt.Sprintf("Error al reproducir la canción: %v", err)
+		}
+		return "Reproduciendo canción"
+	case "stop":
+		stopSong(player)
+		return "Canción detenida"
 	default:
 		return "Comando no reconocido"
 	}
@@ -169,4 +300,41 @@ func formatSongsList(songs []Song) string {
 		songList.WriteString(fmt.Sprintf("%d. Título: %s, Artista: %s, Nombre de archivo: %s\n", i+1, song.Title, song.Artist, song.FileName))
 	}
 	return songList.String()
+}
+
+// Función para reproducir una canción
+func playSong(fileName string, player *Player) error {
+	file, err := os.Open(fileName)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	var streamer beep.StreamSeekCloser
+	var format beep.Format
+
+	if strings.HasSuffix(fileName, ".mp3") {
+		streamer, format, err = mp3.Decode(file)
+		if err != nil {
+			return err
+		}
+	} else if strings.HasSuffix(fileName, ".wav") {
+		streamer, format, err = wav.Decode(file)
+		if err != nil {
+			return err
+		}
+	} else {
+		return fmt.Errorf("Formato de archivo no compatible")
+	}
+
+	player.streamer = streamer
+	player.format = format
+	player.StartPlayback()
+
+	return nil
+}
+
+// Función para detener la reproducción de una canción
+func stopSong(player *Player) {
+	player.StopPlayback()
 }
