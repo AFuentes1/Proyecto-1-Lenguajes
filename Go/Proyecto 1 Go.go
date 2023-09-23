@@ -92,99 +92,6 @@ func (p *Player) StartPlayback() {
 	speaker.Init(p.format.SampleRate, p.format.SampleRate.N(time.Second/10))
 	speaker.Play(p.streamer)
 }
-package main
-
-import (
-"fmt"
-"net"
-"os"
-"strings"
-"sync"
-
-"github.com/faiface/beep"
-"github.com/faiface/beep/mp3"
-"github.com/faiface/beep/speaker"
-"github.com/faiface/beep/wav"
-"io"
-)
-
-// Estructura para representar una canción
-type Song struct {
-	Title    string
-	Artist   string
-	FileName string // Nombre del archivo de la canción
-}
-
-// Estructura para el servidor
-type Server struct {
-	songs []Song
-	mutex sync.Mutex
-}
-
-// Estructura para la reproducción de canciones
-type Player struct {
-	streamer beep.StreamSeekCloser
-	format   beep.Format
-}
-
-// Función para agregar una canción al servidor
-func (s *Server) AddSong(title, artist, fileName string) {
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
-	s.songs = append(s.songs, Song{Title: title, Artist: artist, FileName: fileName})
-}
-
-// Función para listar las canciones del servidor
-func (s *Server) ListSongs() []Song {
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
-	return s.songs
-}
-
-// Función para buscar canciones por título
-func (s *Server) SearchByTitle(title string) []Song {
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
-	var result []Song
-	for _, song := range s.songs {
-		if strings.Contains(song.Title, title) {
-			result = append(result, song)
-		}
-	}
-	return result
-}
-
-// Función para buscar canciones por artista
-func (s *Server) SearchByArtist(artist string) []Song {
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
-	var result []Song
-	for _, song := range s.songs {
-		if strings.Contains(song.Artist, artist) {
-			result = append(result, song)
-		}
-	}
-	return result
-}
-
-// Función para buscar canciones por nombre de archivo
-func (s *Server) SearchByFileName(fileName string) []Song {
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
-	var result []Song
-	for _, song := range s.songs {
-		if strings.Contains(song.FileName, fileName) {
-			result = append(result, song)
-		}
-	}
-	return result
-}
-
-// Función para iniciar la reproducción de una canción
-func (p *Player) StartPlayback() {
-	speaker.Init(p.format.SampleRate, p.format.SampleRate.N(time.Second/10))
-	speaker.Play(p.streamer)
-}
 
 // Función para detener la reproducción de una canción
 func (p *Player) StopPlayback() {
@@ -294,6 +201,11 @@ func processClientRequest(request string, server *Server, player *Player) string
 	}
 }
 
+// Función para detener la reproducción de una canción
+func stopSong(player *Player) {
+	player.StopPlayback()
+}
+
 func formatSongsList(songs []Song) string {
 	var songList strings.Builder
 	for i, song := range songs {
@@ -332,9 +244,4 @@ func playSong(fileName string, player *Player) error {
 	player.StartPlayback()
 
 	return nil
-}
-
-// Función para detener la reproducción de una canción
-func stopSong(player *Player) {
-	player.StopPlayback()
 }
