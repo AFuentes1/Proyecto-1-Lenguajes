@@ -1,7 +1,39 @@
 // Server
 package main
 
-/*
+import (
+	"fmt"
+	"github.com/faiface/beep"
+	"github.com/faiface/beep/mp3"
+	"github.com/faiface/beep/speaker"
+	"github.com/faiface/beep/wav"
+	"net"
+	"os"
+	"strings"
+	"sync"
+	"time"
+)
+
+func main() {
+	server := &Server{}
+	listen, err := net.Listen("tcp", ":12345")
+	if err != nil {
+		fmt.Println("Error al iniciar el servidor:", err)
+		os.Exit(1)
+	}
+	defer listen.Close()
+	fmt.Println("Servidor en ejecución en localhost:12345")
+
+	for {
+		conn, err := listen.Accept()
+		if err != nil {
+			fmt.Println("Error al aceptar la conexión:", err)
+			continue
+		}
+		go handleConnection(conn, server)
+	}
+}
+
 // Estructura para representar una canción
 type Song struct {
 	Title    string
@@ -85,7 +117,6 @@ func (p *Player) StopPlayback() {
 	speaker.Clear()
 }
 
-
 func handleConnection(conn net.Conn, server *Server) {
 	defer conn.Close()
 	fmt.Println("Nueva conexión establecida")
@@ -101,7 +132,11 @@ func handleConnection(conn net.Conn, server *Server) {
 		}
 		clientRequest := string(buffer[:n])
 		response := processClientRequest(clientRequest, server, player)
-		conn.Write([]byte(response))
+		fmt.Println("Mensaje que va al cliente es: ", response)
+		_, err = conn.Write([]byte(response + "\n"))
+		if err != nil {
+			fmt.Println("Error al enviar respuesta al cliente:", err)
+		}
 	}
 }
 
@@ -122,6 +157,8 @@ func processClientRequest(request string, server *Server, player *Player) string
 		title := params[0]
 		artist := params[1]
 		fileName := params[2]
+
+		fmt.Printf("Datos recibidos del cliente (add):\nTítulo: %s\nArtista: %s\nNombre de archivo: %s\n", title, artist, fileName)
 		server.AddSong(title, artist, fileName)
 		return "Canción agregada con éxito"
 	case "list":
@@ -213,4 +250,3 @@ func playSong(fileName string, player *Player) error {
 
 	return nil
 }
-*/
