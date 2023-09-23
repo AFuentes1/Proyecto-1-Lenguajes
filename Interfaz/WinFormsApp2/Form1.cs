@@ -13,19 +13,16 @@ namespace WinFormsApp2
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text != "")
+            if (textBox1.Text == "")
             {
-                var caracteres = textBox1.Text.ToCharArray();
-                //var listaDeCaracteres = new FSharpList<char>(caracteres[0], caracteres);
-                var secuenciaFSharp = ListModule.OfSeq(caracteres);
-                var listaDeCaracteres = ListModule.OfSeq(secuenciaFSharp);
-                var request = "searchTitle|Believer";
 
-                ClassLibrary1.lib.sendRequestToServer("127.0.0.1", 12345, request);
+                var request = "add|Titulo|Artista|MP3";
 
+                textBox1.Text = ClassLibrary1.lib.sendRequestToServer("127.0.0.1", 12345, request);
+                
             }
             else
-                textBox2.Text = "Cannot convert empty String";
+                textBox2.Text = "No se agregó";
         }
 
         private void btn_Restablecer_Click(object sender, EventArgs e)
@@ -47,5 +44,7 @@ namespace WinFormsApp2
                 bool PlayPausa = true;
             }
         }
+
+        
     }
 }

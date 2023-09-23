@@ -11,7 +11,7 @@ let sendRequestToServer (serverIP: string) (serverPort: int) (request: string) =
         let client = new TcpClient(serverIP, serverPort)
         let stream = client.GetStream()
         let writer = new StreamWriter(stream, Encoding.ASCII)
-        let reader = new StreamReader(stream, Encoding.ASCII)
+        let reader = new StreamReader(stream, Encoding.UTF8)
 
         writer.WriteLine(request)
         writer.Flush()

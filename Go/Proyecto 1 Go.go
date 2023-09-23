@@ -133,10 +133,12 @@ func handleConnection(conn net.Conn, server *Server) {
 		clientRequest := string(buffer[:n])
 		response := processClientRequest(clientRequest, server, player)
 		fmt.Println("Mensaje que va al cliente es: ", response)
+
 		_, err = conn.Write([]byte(response + "\n"))
 		if err != nil {
 			fmt.Println("Error al enviar respuesta al cliente:", err)
 		}
+		conn.Close()
 	}
 }
 

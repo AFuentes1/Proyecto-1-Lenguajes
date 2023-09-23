@@ -12,27 +12,23 @@ module lib =
             let client = new TcpClient(serverIP, serverPort)
             let stream = client.GetStream()
             let writer = new StreamWriter(stream, Encoding.ASCII)
-            let reader = new StreamReader(stream, Encoding.ASCII)
+            let reader = new StreamReader(stream, Encoding.UTF8)
 
             writer.WriteLine(request)
             writer.Flush()
 
-            let response = reader.ReadToEnd()
-            printfn "Respuesta del servidor:\n%s" response
+            let response = reader.ReadToEnd() // Obtener la respuesta del servidor
 
             client.Close()
+            
+            // Devolver la respuesta como resultado de la función
+            response
         with
         | :? SocketException as ex ->
             printfn "Error de conexión al servidor: %s" ex.Message
+            // Puedes manejar el error aquí si es necesario
+            ""
         | ex ->
             printfn "Error inesperado: %s" ex.Message
-  
-    let rec invertir lista =
-        match lista with
-        | [] -> []
-        | cabeza::cola -> (invertir cola) @ [cabeza]
-
-    let invertirString lista =
-        let listaInvertida = invertir lista
-        let resultado = System.String( listaInvertida |> List.toArray)
-        resultado
+            // Puedes manejar el error aquí si es necesario
+            ""
