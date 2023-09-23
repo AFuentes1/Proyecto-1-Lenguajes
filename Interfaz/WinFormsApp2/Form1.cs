@@ -19,10 +19,10 @@ namespace WinFormsApp2
                 //var listaDeCaracteres = new FSharpList<char>(caracteres[0], caracteres);
                 var secuenciaFSharp = ListModule.OfSeq(caracteres);
                 var listaDeCaracteres = ListModule.OfSeq(secuenciaFSharp);
+                var request = "searchTitle|Believer";
 
-                var listaresultado = ClassLibrary1.lib.invertirString(listaDeCaracteres);
+                ClassLibrary1.lib.sendRequestToServer("127.0.0.1", 12345, request);
 
-                textBox2.Text = listaresultado.ToString();
             }
             else
                 textBox2.Text = "Cannot convert empty String";

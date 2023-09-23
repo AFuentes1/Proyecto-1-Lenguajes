@@ -1,20 +1,7 @@
 // Server
 package main
 
-import (
-	"fmt"
-	"net"
-	"os"
-	"strings"
-	"sync"
-	"time"
-
-	"github.com/faiface/beep"
-	"github.com/faiface/beep/mp3"
-	"github.com/faiface/beep/speaker"
-	"github.com/faiface/beep/wav"
-)
-
+/*
 // Estructura para representar una canción
 type Song struct {
 	Title    string
@@ -98,25 +85,6 @@ func (p *Player) StopPlayback() {
 	speaker.Clear()
 }
 
-func main() {
-	server := &Server{}
-	listen, err := net.Listen("tcp", ":12345")
-	if err != nil {
-		fmt.Println("Error al iniciar el servidor:", err)
-		os.Exit(1)
-	}
-	defer listen.Close()
-	fmt.Println("Servidor en ejecución en localhost:12345")
-
-	for {
-		conn, err := listen.Accept()
-		if err != nil {
-			fmt.Println("Error al aceptar la conexión:", err)
-			continue
-		}
-		go handleConnection(conn, server)
-	}
-}
 
 func handleConnection(conn net.Conn, server *Server) {
 	defer conn.Close()
@@ -245,3 +213,4 @@ func playSong(fileName string, player *Player) error {
 
 	return nil
 }
+*/
