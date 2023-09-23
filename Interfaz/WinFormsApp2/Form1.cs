@@ -32,20 +32,19 @@ namespace WinFormsApp2
         {
 
         }
-
+        //Tiene boton de play
+        bool PlayPausa = true;
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            if (pictureBox1.Image == Properties.Resources.play)
+            if (PlayPausa == true)
             {
                 pictureBox1.Image = Properties.Resources.pause;
-            }
-            else if (pictureBox1.Image == Properties.Resources.pause)
-            {
-                pictureBox1.Image = Properties.Resources.play;
+                bool PlayPausa = false;
             }
             else
             {
-                pictureBox1.Image = Properties.Resources.Avanzar;
+                pictureBox1.Image = Properties.Resources.play;
+                bool PlayPausa = true;
             }
         }
     }

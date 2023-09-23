@@ -30,7 +30,6 @@
         {
             saveFileDialog1 = new SaveFileDialog();
             panel1 = new Panel();
-            button3 = new Button();
             lbl_Busqueda = new Label();
             btn_Archivo = new Button();
             btn_bArtista = new Button();
@@ -73,19 +72,8 @@
             panel1.Controls.Add(textBox1);
             panel1.Location = new Point(12, 12);
             panel1.Name = "panel1";
-            panel1.Size = new Size(537, 448);
+            panel1.Size = new Size(537, 553);
             panel1.TabIndex = 5;
-            // 
-            // button3
-            // 
-            button3.BackColor = Color.Transparent;
-            button3.BackgroundImage = Properties.Resources.play;
-            button3.BackgroundImageLayout = ImageLayout.Zoom;
-            button3.Location = new Point(762, 13);
-            button3.Name = "button3";
-            button3.Size = new Size(75, 75);
-            button3.TabIndex = 12;
-            button3.UseVisualStyleBackColor = false;
             // 
             // lbl_Busqueda
             // 
@@ -160,13 +148,12 @@
             // panel2
             // 
             panel2.BackColor = Color.FromArgb(242, 249, 255);
-            panel2.Controls.Add(button3);
             panel2.Controls.Add(lbl_Artista);
             panel2.Controls.Add(label1);
             panel2.Controls.Add(pictureBox3);
             panel2.Controls.Add(pictureBox2);
             panel2.Controls.Add(pictureBox1);
-            panel2.Location = new Point(12, 466);
+            panel2.Location = new Point(12, 571);
             panel2.Name = "panel2";
             panel2.Size = new Size(1174, 125);
             panel2.TabIndex = 6;
@@ -231,7 +218,7 @@
             panel3.Controls.Add(textBox2);
             panel3.Location = new Point(555, 12);
             panel3.Name = "panel3";
-            panel3.Size = new Size(313, 448);
+            panel3.Size = new Size(313, 553);
             panel3.TabIndex = 6;
             // 
             // button1
@@ -261,7 +248,7 @@
             panel4.Controls.Add(textBox3);
             panel4.Location = new Point(874, 12);
             panel4.Name = "panel4";
-            panel4.Size = new Size(312, 448);
+            panel4.Size = new Size(312, 553);
             panel4.TabIndex = 6;
             // 
             // button2
@@ -295,7 +282,7 @@
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(114, 120, 140);
-            ClientSize = new Size(1198, 601);
+            ClientSize = new Size(1198, 708);
             Controls.Add(panel4);
             Controls.Add(panel3);
             Controls.Add(panel2);
@@ -341,6 +328,5 @@
         private PictureBox pictureBox2;
         private Label lbl_Artista;
         private Label label1;
-        private Button button3;
     }
 }
