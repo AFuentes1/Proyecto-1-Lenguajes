@@ -5,6 +5,7 @@ open System.Net
 open System.Net.Sockets
 open System.Text
 open System.Net.Http
+open System.Net.Http.Headers
 
 module lib =
 
