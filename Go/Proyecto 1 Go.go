@@ -64,7 +64,13 @@ type Player struct {
 func (s *Server) AddSong(title, artist, fileName string) {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
+	fmt.Printf("ADD Titulo: %s\nArtist: %s\nFileName: %s\n\n", title, artist, fileName)
 	s.songs = append(s.songs, Song{Title: title, Artist: artist, FileName: fileName})
+
+	fmt.Println("Canciones Agregadas hasta el momento:")
+	for _, song := range s.songs {
+		fmt.Printf("Title: %s\nArtist: %s\nFileName: %s\n\n", song.Title, song.Artist, song.FileName)
+	}
 }
 
 // Función para listar las canciones del servidor
@@ -145,8 +151,9 @@ func handleConnection(conn net.Conn, server *Server) {
 		if err != nil {
 			fmt.Println("Error al enviar respuesta al cliente:", err)
 		}
-		conn.Close()
+
 	}
+	conn.Close()
 }
 
 func processClientRequest(request string, server *Server, player *Player) string {
@@ -167,19 +174,19 @@ func processClientRequest(request string, server *Server, player *Player) string
 		artist := params[1]
 		fileName := params[2]
 
-		fmt.Printf("Datos recibidos del cliente (add):\nTítulo: %s\nArtista: %s\nNombre de archivo: %s\n", title, artist, fileName)
+		fmt.Printf("Datos recibidos del cliente: ")
 		server.AddSong(title, artist, fileName)
 		return "Canción agregada con éxito"
 	case "list":
-		songs := server.ListSongs()
-		// Convierte la lista de canciones en JSON
-		songsJSON, err := json.Marshal(songs)
-
+		songs := server.ListSongs() // Obtén la lista de canciones del servidor
+		responseJSON, err := json.Marshal(songs)
 		if err != nil {
-			return "Error al convertir la lista de canciones en JSON"
+			fmt.Println("Error al convertir la lista de canciones a JSON:", err)
+			return "Error al obtener la lista de canciones"
 		}
-		return string(songsJSON)
-		// Resto de casos...
+
+		return string(responseJSON)
+
 	case "searchTitle":
 		if len(params) != 1 {
 			return "Comando 'searchTitle' requiere un parámetro: título"

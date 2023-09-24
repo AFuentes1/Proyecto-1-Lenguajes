@@ -31,17 +31,27 @@ namespace WinFormsApp2
 
         private void btn_Restablecer_Click(object sender, EventArgs e)
         {
-            string serverIP = "127.0.0.1"; // Reemplaza con la IP de tu servidor Go
-            int serverPort = 12345; // Reemplaza con el puerto de tu servidor Go
-            string request = "list"; // Comando para listar canciones
+            string serverIP = "127.0.0.1"; // Reemplaza con la IP de tu servidor F#
+            int serverPort = 12345;
+            string responseJson = lib.sendRequestToServerList(serverIP, serverPort);
 
-            string responseJson = lib.sendRequestToServer(serverIP, serverPort, request);
+            
 
-            // Deserializa la respuesta JSON en una lista de canciones
-            List<SongInfo> songs = JsonConvert.DeserializeObject<List<SongInfo>>(responseJson);
+            // Verificar si la respuesta no es nula o vacía antes de deserializarla
+            if (!string.IsNullOrEmpty(responseJson))
+            {
+                // Deserializar la lista de canciones desde JSON a una lista de objetos SongInfo
+                List<SongInfo> songs = JsonConvert.DeserializeObject<List<SongInfo>>(responseJson);
 
-            // Enlaza la lista de canciones al DataGridView
-            dataGridView1.DataSource = songs;
+                // Configurar el DataGridView
+                dataGridView1.AutoGenerateColumns = true;
+                dataGridView1.DataSource = songs;
+            }
+            else
+            {
+                // Manejar el caso en el que la respuesta es nula o vacía
+                MessageBox.Show("No se pudo obtener la lista de canciones desde el servidor.");
+            }
         }
         //Tiene boton de play-
         bool PlayPausa = true;
