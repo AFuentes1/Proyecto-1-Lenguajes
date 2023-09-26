@@ -30,25 +30,27 @@
         {
             saveFileDialog1 = new SaveFileDialog();
             panel1 = new Panel();
+            dataGridView1 = new DataGridView();
             lbl_Busqueda = new Label();
             btn_Archivo = new Button();
             btn_bArtista = new Button();
             btn_bTitulo = new Button();
             btn_Restablecer = new Button();
-            textBox1 = new TextBox();
+            txt_buscar = new TextBox();
             btn_AgregarC = new Button();
             textBox2 = new TextBox();
             panel2 = new Panel();
             lbl_Artista = new Label();
-            label1 = new Label();
+            lbl_rN = new Label();
             pictureBox3 = new PictureBox();
             pictureBox2 = new PictureBox();
             pictureBox1 = new PictureBox();
             panel3 = new Panel();
+            waveViewer1 = new NAudio.Gui.WaveViewer();
             button1 = new Button();
             lbl_lReproduccion = new Label();
             panel4 = new Panel();
-            button2 = new Button();
+            btn_NuevaLista = new Button();
             lbl_sReproduccion = new Label();
             textBox3 = new TextBox();
             panel5 = new Panel();
@@ -56,8 +58,11 @@
             label2 = new Label();
             txtTitulo = new TextBox();
             txtArtista = new TextBox();
-            dataGridView1 = new DataGridView();
+            label1 = new Label();
+            dataGridView2 = new DataGridView();
+            dataGridView3 = new DataGridView();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
@@ -65,7 +70,8 @@
             panel3.SuspendLayout();
             panel4.SuspendLayout();
             panel5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView3).BeginInit();
             SuspendLayout();
             // 
             // panel1
@@ -77,11 +83,23 @@
             panel1.Controls.Add(btn_bArtista);
             panel1.Controls.Add(btn_bTitulo);
             panel1.Controls.Add(btn_Restablecer);
-            panel1.Controls.Add(textBox1);
+            panel1.Controls.Add(txt_buscar);
             panel1.Location = new Point(12, 12);
             panel1.Name = "panel1";
             panel1.Size = new Size(537, 753);
             panel1.TabIndex = 5;
+            // 
+            // dataGridView1
+            // 
+            dataGridView1.BackgroundColor = Color.FromArgb(5, 15, 34);
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Location = new Point(10, 84);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.RowHeadersWidth = 51;
+            dataGridView1.RowTemplate.Height = 29;
+            dataGridView1.Size = new Size(518, 666);
+            dataGridView1.TabIndex = 8;
+            dataGridView1.CellClick += dataGridView1_CellClick;
             // 
             // lbl_Busqueda
             // 
@@ -101,6 +119,7 @@
             btn_Archivo.TabIndex = 6;
             btn_Archivo.Text = "Archivo";
             btn_Archivo.UseVisualStyleBackColor = true;
+            btn_Archivo.Click += btn_Archivo_Click;
             // 
             // btn_bArtista
             // 
@@ -110,6 +129,7 @@
             btn_bArtista.TabIndex = 5;
             btn_bArtista.Text = "Artista";
             btn_bArtista.UseVisualStyleBackColor = true;
+            btn_bArtista.Click += btn_bArtista_Click;
             // 
             // btn_bTitulo
             // 
@@ -119,23 +139,24 @@
             btn_bTitulo.TabIndex = 4;
             btn_bTitulo.Text = "Titulo";
             btn_bTitulo.UseVisualStyleBackColor = true;
+            btn_bTitulo.Click += btn_bTitulo_Click;
             // 
             // btn_Restablecer
             // 
             btn_Restablecer.Location = new Point(113, 10);
             btn_Restablecer.Name = "btn_Restablecer";
-            btn_Restablecer.Size = new Size(94, 29);
+            btn_Restablecer.Size = new Size(148, 29);
             btn_Restablecer.TabIndex = 2;
-            btn_Restablecer.Text = "Restablecer";
+            btn_Restablecer.Text = "Cargar Todo";
             btn_Restablecer.UseVisualStyleBackColor = true;
             btn_Restablecer.Click += btn_Restablecer_Click;
             // 
-            // textBox1
+            // txt_buscar
             // 
-            textBox1.Location = new Point(10, 50);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(230, 27);
-            textBox1.TabIndex = 0;
+            txt_buscar.Location = new Point(10, 50);
+            txt_buscar.Name = "txt_buscar";
+            txt_buscar.Size = new Size(230, 27);
+            txt_buscar.TabIndex = 0;
             // 
             // btn_AgregarC
             // 
@@ -158,7 +179,7 @@
             // 
             panel2.BackColor = Color.FromArgb(242, 249, 255);
             panel2.Controls.Add(lbl_Artista);
-            panel2.Controls.Add(label1);
+            panel2.Controls.Add(lbl_rN);
             panel2.Controls.Add(pictureBox3);
             panel2.Controls.Add(pictureBox2);
             panel2.Controls.Add(pictureBox1);
@@ -177,15 +198,15 @@
             lbl_Artista.TabIndex = 11;
             lbl_Artista.Text = "Artista";
             // 
-            // label1
+            // lbl_rN
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            label1.Location = new Point(10, 40);
-            label1.Name = "label1";
-            label1.Size = new Size(85, 28);
-            label1.TabIndex = 10;
-            label1.Text = "Nombre";
+            lbl_rN.AutoSize = true;
+            lbl_rN.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            lbl_rN.Location = new Point(10, 40);
+            lbl_rN.Name = "lbl_rN";
+            lbl_rN.Size = new Size(85, 28);
+            lbl_rN.TabIndex = 10;
+            lbl_rN.Text = "Nombre";
             // 
             // pictureBox3
             // 
@@ -209,7 +230,7 @@
             // 
             // pictureBox1
             // 
-            pictureBox1.Image = Properties.Resources.pause;
+            pictureBox1.Image = Properties.Resources.play;
             pictureBox1.Location = new Point(431, 24);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(75, 75);
@@ -222,6 +243,8 @@
             // 
             panel3.BackColor = Color.FromArgb(242, 249, 255);
             panel3.BorderStyle = BorderStyle.FixedSingle;
+            panel3.Controls.Add(dataGridView2);
+            panel3.Controls.Add(waveViewer1);
             panel3.Controls.Add(button1);
             panel3.Controls.Add(lbl_lReproduccion);
             panel3.Controls.Add(textBox2);
@@ -229,6 +252,16 @@
             panel3.Name = "panel3";
             panel3.Size = new Size(313, 753);
             panel3.TabIndex = 6;
+            // 
+            // waveViewer1
+            // 
+            waveViewer1.Location = new Point(78, 337);
+            waveViewer1.Name = "waveViewer1";
+            waveViewer1.SamplesPerPixel = 128;
+            waveViewer1.Size = new Size(188, 188);
+            waveViewer1.StartPosition = 0L;
+            waveViewer1.TabIndex = 10;
+            waveViewer1.WaveStream = null;
             // 
             // button1
             // 
@@ -253,7 +286,8 @@
             // panel4
             // 
             panel4.BackColor = Color.FromArgb(242, 249, 255);
-            panel4.Controls.Add(button2);
+            panel4.Controls.Add(dataGridView3);
+            panel4.Controls.Add(btn_NuevaLista);
             panel4.Controls.Add(lbl_sReproduccion);
             panel4.Controls.Add(textBox3);
             panel4.Location = new Point(874, 12);
@@ -261,14 +295,15 @@
             panel4.Size = new Size(312, 753);
             panel4.TabIndex = 6;
             // 
-            // button2
+            // btn_NuevaLista
             // 
-            button2.Location = new Point(166, 40);
-            button2.Name = "button2";
-            button2.Size = new Size(136, 29);
-            button2.TabIndex = 11;
-            button2.Text = "Nueva Lista";
-            button2.UseVisualStyleBackColor = true;
+            btn_NuevaLista.Location = new Point(166, 40);
+            btn_NuevaLista.Name = "btn_NuevaLista";
+            btn_NuevaLista.Size = new Size(136, 29);
+            btn_NuevaLista.TabIndex = 11;
+            btn_NuevaLista.Text = "Nueva Lista";
+            btn_NuevaLista.UseVisualStyleBackColor = true;
+            btn_NuevaLista.Click += btn_NuevaLista_Click;
             // 
             // lbl_sReproduccion
             // 
@@ -290,6 +325,7 @@
             // panel5
             // 
             panel5.BackColor = Color.FromArgb(242, 249, 255);
+            panel5.Controls.Add(label1);
             panel5.Controls.Add(label3);
             panel5.Controls.Add(label2);
             panel5.Controls.Add(txtTitulo);
@@ -304,7 +340,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            label3.Location = new Point(171, 51);
+            label3.Location = new Point(282, 50);
             label3.Name = "label3";
             label3.Size = new Size(69, 28);
             label3.TabIndex = 12;
@@ -314,7 +350,7 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            label2.Location = new Point(171, 13);
+            label2.Location = new Point(289, 13);
             label2.Name = "label2";
             label2.Size = new Size(62, 28);
             label2.TabIndex = 8;
@@ -322,28 +358,49 @@
             // 
             // txtTitulo
             // 
-            txtTitulo.Location = new Point(274, 13);
+            txtTitulo.Location = new Point(357, 13);
             txtTitulo.Name = "txtTitulo";
-            txtTitulo.Size = new Size(254, 27);
+            txtTitulo.Size = new Size(171, 27);
             txtTitulo.TabIndex = 11;
             // 
             // txtArtista
             // 
-            txtArtista.Location = new Point(274, 51);
+            txtArtista.Location = new Point(357, 51);
             txtArtista.Name = "txtArtista";
-            txtArtista.Size = new Size(254, 27);
+            txtArtista.Size = new Size(171, 27);
             txtArtista.TabIndex = 10;
             // 
-            // dataGridView1
+            // label1
             // 
-            dataGridView1.BackgroundColor = Color.FromArgb(5, 15, 34);
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(10, 84);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.RowTemplate.Height = 29;
-            dataGridView1.Size = new Size(518, 666);
-            dataGridView1.TabIndex = 8;
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            label1.Location = new Point(10, 13);
+            label1.Name = "label1";
+            label1.Size = new Size(145, 28);
+            label1.TabIndex = 13;
+            label1.Text = "Cargar Canción";
+            // 
+            // dataGridView2
+            // 
+            dataGridView2.BackgroundColor = Color.FromArgb(5, 15, 34);
+            dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView2.Location = new Point(10, 83);
+            dataGridView2.Name = "dataGridView2";
+            dataGridView2.RowHeadersWidth = 51;
+            dataGridView2.RowTemplate.Height = 29;
+            dataGridView2.Size = new Size(294, 665);
+            dataGridView2.TabIndex = 9;
+            // 
+            // dataGridView3
+            // 
+            dataGridView3.BackgroundColor = Color.FromArgb(5, 15, 34);
+            dataGridView3.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView3.Location = new Point(10, 84);
+            dataGridView3.Name = "dataGridView3";
+            dataGridView3.RowHeadersWidth = 51;
+            dataGridView3.RowTemplate.Height = 29;
+            dataGridView3.Size = new Size(292, 665);
+            dataGridView3.TabIndex = 11;
             // 
             // Form1
             // 
@@ -359,8 +416,10 @@
             Margin = new Padding(3, 4, 3, 4);
             Name = "Form1";
             Text = "SpotyCry";
+            FormClosed += Form1_FormClosed;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
@@ -372,7 +431,8 @@
             panel4.PerformLayout();
             panel5.ResumeLayout(false);
             panel5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView3).EndInit();
             ResumeLayout(false);
         }
 
@@ -383,7 +443,7 @@
         private Panel panel3;
         private Panel panel4;
         private TextBox textBox2;
-        private TextBox textBox1;
+        private TextBox txt_buscar;
         private Button btn_AgregarC;
         private Button btn_Restablecer;
         private Label lbl_Busqueda;
@@ -393,18 +453,22 @@
         private Label lbl_lReproduccion;
         private Button button1;
         private Label lbl_sReproduccion;
-        private Button button2;
+        private Button btn_NuevaLista;
         private TextBox textBox3;
         private PictureBox pictureBox1;
         private PictureBox pictureBox3;
         private PictureBox pictureBox2;
         private Label lbl_Artista;
-        private Label label1;
+        private Label lbl_rN;
         private Panel panel5;
         private Label label3;
         private Label label2;
         private TextBox txtTitulo;
         private TextBox txtArtista;
         private DataGridView dataGridView1;
+        private NAudio.Gui.WaveViewer waveViewer1;
+        private Label label1;
+        private DataGridView dataGridView2;
+        private DataGridView dataGridView3;
     }
 }

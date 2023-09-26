@@ -15,6 +15,8 @@ import (
 	"time"
 )
 
+var lastID int = 0
+
 func main() {
 	server := &Server{}
 	listen, err := net.Listen("tcp", ":12345")
@@ -36,13 +38,15 @@ func main() {
 }
 
 type Song2 struct {
-	ID     int    `json:"ID"`
-	Title  string `json:"Title"`
-	Artist string `json:"Artist"`
+	ID       int    `json:"ID"`
+	Title    string `json:"Title"`
+	Artist   string `json:"Artist"`
+	FileName string `json:"FileName"`
 }
 
 // Estructura para representar una canción
 type Song struct {
+	ID       int
 	Title    string
 	Artist   string
 	FileName string // Nombre del archivo de la canción
@@ -65,12 +69,14 @@ func (s *Server) AddSong(title, artist, fileName string) {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 	fmt.Printf("ADD Titulo: %s\nArtist: %s\nFileName: %s\n\n", title, artist, fileName)
-	s.songs = append(s.songs, Song{Title: title, Artist: artist, FileName: fileName})
 
-	fmt.Println("Canciones Agregadas hasta el momento:")
-	for _, song := range s.songs {
-		fmt.Printf("Title: %s\nArtist: %s\nFileName: %s\n\n", song.Title, song.Artist, song.FileName)
-	}
+	newSong := Song{ID: lastID, Title: title, Artist: artist, FileName: fileName}
+	s.songs = append(s.songs, newSong)
+	lastID++
+
+	fmt.Println("Canción agregada:")
+	fmt.Printf("ID: %d\nTitle: %s\nArtist: %s\nFileName: %s\n\n", newSong.ID, newSong.Title, newSong.Artist, newSong.FileName)
+
 }
 
 // Función para listar las canciones del servidor
@@ -99,7 +105,9 @@ func (s *Server) SearchByArtist(artist string) []Song {
 	defer s.mutex.Unlock()
 	var result []Song
 	for _, song := range s.songs {
+		fmt.Printf("Analizando canción por artista: %s\n", song.Artist)
 		if strings.Contains(song.Artist, artist) {
+			fmt.Printf("******ENCONTRÓ canción por artista: %s\n", song.Artist)
 			result = append(result, song)
 		}
 	}
@@ -150,10 +158,10 @@ func handleConnection(conn net.Conn, server *Server) {
 		_, err = conn.Write([]byte(response + "\n"))
 		if err != nil {
 			fmt.Println("Error al enviar respuesta al cliente:", err)
+			return // Cerrar la conexión en caso de error
 		}
-
+		conn.Close()
 	}
-	conn.Close()
 }
 
 func processClientRequest(request string, server *Server, player *Player) string {
@@ -161,7 +169,7 @@ func processClientRequest(request string, server *Server, player *Player) string
 	if len(parts) < 2 {
 		fmt.Println("Posible comando no válido")
 	}
-
+	fmt.Printf("Solicitud es: %s\n", request)
 	command := parts[0]
 	params := parts[1:]
 
@@ -178,6 +186,7 @@ func processClientRequest(request string, server *Server, player *Player) string
 		server.AddSong(title, artist, fileName)
 		return "Canción agregada con éxito"
 	case "list":
+		fmt.Println("ENTRO A BUSCAR JSON")
 		songs := server.ListSongs() // Obtén la lista de canciones del servidor
 		responseJSON, err := json.Marshal(songs)
 		if err != nil {
@@ -192,22 +201,45 @@ func processClientRequest(request string, server *Server, player *Player) string
 			return "Comando 'searchTitle' requiere un parámetro: título"
 		}
 		title := params[0]
-		matchingSongs := server.SearchByTitle(title)
-		return formatSongsList(matchingSongs)
+
+		fmt.Println("ENTRO A BUSCAR JSONTitulos")
+		matchingSongs := server.SearchByTitle(title) // Obtén la lista de canciones del servidor
+		responseJSONT, err := json.Marshal(matchingSongs)
+		if err != nil {
+			fmt.Println("Error al convertir la lista de canciones a JSON:", err)
+			return "Error al obtener la lista de canciones"
+		}
+		return string(responseJSONT)
 	case "searchArtist":
 		if len(params) != 1 {
-			return "Comando 'searchArtist' requiere un parámetro: artista"
+			return "Comando 'searchTitle' requiere un parámetro: título"
 		}
 		artist := params[0]
-		matchingSongs := server.SearchByArtist(artist)
-		return formatSongsList(matchingSongs)
+		fmt.Printf("El artista a Buscar es: %s", artist)
+		fmt.Println("ENTRO A BUSCAR JSONArtista")
+		matchingSongs := server.SearchByArtist(artist) // Obtén la lista de canciones del servidor
+		responseJSONA, err := json.Marshal(matchingSongs)
+		if err != nil {
+			fmt.Println("Error al convertir la lista de canciones a JSON:", err)
+			return "Error al obtener la lista de canciones"
+		}
+		fmt.Printf("lo que retorna es A: %s", responseJSONA)
+		return string(responseJSONA)
 	case "searchFileName":
 		if len(params) != 1 {
 			return "Comando 'searchFileName' requiere un parámetro: nombre de archivo"
 		}
+
 		fileName := params[0]
-		matchingSongs := server.SearchByFileName(fileName)
-		return formatSongsList(matchingSongs)
+
+		fmt.Println("ENTRO A BUSCAR JSONTitulos")
+		matchingSongs := server.SearchByFileName(fileName) // Obtén la lista de canciones del servidor
+		responseJSONT, err := json.Marshal(matchingSongs)
+		if err != nil {
+			fmt.Println("Error al convertir la lista de canciones a JSON:", err)
+			return "Error al obtener la lista de canciones"
+		}
+		return string(responseJSONT)
 	case "play":
 		if len(params) != 1 {
 			return "Comando 'play' requiere un parámetro: nombre de archivo de la canción"

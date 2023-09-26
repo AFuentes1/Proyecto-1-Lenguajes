@@ -44,11 +44,24 @@ module lib =
             ID: int
             Title: string
             Artist: string
+            FileName: string
         }
 
 // ...
 
-    let sendRequestToServerList (serverIP: string) (serverPort: int) =
-        let request = "list" // Comando para solicitar la lista de canciones
+    let sendRequestToServerList (serverIP: string) (serverPort: int) (tipoCaso: string) (busqueda: string) =
+        let mutable request = ""
+        if tipoCaso = "listar" then
+            request <- "list|0|0"
+        elif tipoCaso = "titulo" then
+            request <- sprintf "searchTitle|%s" busqueda
+        elif tipoCaso = "artista" then
+            request <- sprintf "searchArtist|%s" busqueda
+        elif tipoCaso = "archivo" then
+            request <- sprintf "searchFileName|%s" busqueda
+        else
+            failwith "Tipo de caso no válido"
+    
         let responseJson = sendRequestToServer serverIP serverPort request
         responseJson
+

@@ -24,6 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Bass.Net" Version="1.0.0" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ClassLibrary1\ClassLibrary1.fsproj" />
   </ItemGroup>
 

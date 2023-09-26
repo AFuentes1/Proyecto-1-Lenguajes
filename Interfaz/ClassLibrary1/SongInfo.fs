@@ -5,4 +5,5 @@ type SongInfo =
         ID: int
         Title: string
         Artist: string
+        FileName: string
     }
