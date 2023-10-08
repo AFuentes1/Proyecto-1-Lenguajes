@@ -108,19 +108,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\isaac\\.nuget\\packages\\": {}
+    "C:\\Users\\ANTONY\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\isaac\\OneDrive\\Escritorio\\Git Analisis\\Proyecto-1-Lenguajes\\Proyecto 1\\Proyecto 1.fsproj",
+      "projectUniqueName": "C:\\Users\\ANTONY\\Desktop\\Proyecto-1-Lenguajes R2\\Proyecto 1\\Proyecto 1.fsproj",
       "projectName": "Proyecto 1",
-      "projectPath": "C:\\Users\\isaac\\OneDrive\\Escritorio\\Git Analisis\\Proyecto-1-Lenguajes\\Proyecto 1\\Proyecto 1.fsproj",
-      "packagesPath": "C:\\Users\\isaac\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\isaac\\OneDrive\\Escritorio\\Git Analisis\\Proyecto-1-Lenguajes\\Proyecto 1\\obj\\",
+      "projectPath": "C:\\Users\\ANTONY\\Desktop\\Proyecto-1-Lenguajes R2\\Proyecto 1\\Proyecto 1.fsproj",
+      "packagesPath": "C:\\Users\\ANTONY\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\ANTONY\\Desktop\\Proyecto-1-Lenguajes R2\\Proyecto 1\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\isaac\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\ANTONY\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

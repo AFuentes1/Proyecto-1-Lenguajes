@@ -16,8 +16,14 @@ let sendRequestToServer (serverIP: string) (serverPort: int) (request: string) =
         writer.WriteLine(request)
         writer.Flush()
 
-        let response = reader.ReadToEnd()
-        printfn "Respuesta del servidor:\n%s" response
+        if request = "list" then
+            // Si es una solicitud de lista, recibir la lista del servidor
+            let response = reader.ReadToEnd()
+            printfn "Lista de canciones:\n%s" response
+        else
+            // Si no es una solicitud de lista, mostrar la respuesta del servidor
+            let response = reader.ReadLine()
+            printfn "Respuesta del servidor: %s" response
 
         client.Close()
     with
