@@ -6,6 +6,7 @@ open System.Net.Sockets
 open System.Text
 open System.Net.Http
 open System.Net.Http.Headers
+open Newtonsoft.Json
 
 module lib =
 
@@ -36,30 +37,31 @@ module lib =
             ""
     
 
-    let sendRequestWithFileToServer (serverIP: string) (serverPort: int) (request: string) (filePath: string) =
-        try
-            use httpClient = new HttpClient()
-        
-            // Construir un objeto MultipartFormDataContent para enviar la solicitud con un archivo adjunto
-            let content = new MultipartFormDataContent()
-            let fileContent = new ByteArrayContent(File.ReadAllBytes(filePath))
-            fileContent.Headers.ContentDisposition <- new ContentDispositionHeaderValue("form-data")
-            fileContent.Headers.ContentDisposition.Name <- "\"file\""
-            fileContent.Headers.ContentDisposition.FileName <- "\"" + Path.GetFileName(filePath) + "\""
-            content.Add(fileContent)
 
-            // Agregar otros datos de la solicitud, como el comando y los detalles de la canción
-            content.Add(new StringContent(request), "command")
+// Define una estructura para representar una canción en F#
+    type SongInfo =
+        {
+            ID: int
+            Title: string
+            Artist: string
+            FileName: string
+        }
 
-            // Realizar la solicitud POST al servidor Go
-            let response = httpClient.PostAsync($"http://{serverIP}:{serverPort}/endpoint", content).Result
-        
-            // Leer la respuesta del servidor Go
-            let responseBody = response.Content.ReadAsStringAsync().Result
-            responseBody
-        with
-        | ex ->
-            printfn "Error inesperado: %s" ex.Message
-            // Puedes manejar el error aquí si es necesarios
-            ""
+// ...
+
+    let sendRequestToServerList (serverIP: string) (serverPort: int) (tipoCaso: string) (busqueda: string) =
+        let mutable request = ""
+        if tipoCaso = "listar" then
+            request <- "list|0|0"
+        elif tipoCaso = "titulo" then
+            request <- sprintf "searchTitle|%s" busqueda
+        elif tipoCaso = "artista" then
+            request <- sprintf "searchArtist|%s" busqueda
+        elif tipoCaso = "archivo" then
+            request <- sprintf "searchFileName|%s" busqueda
+        else
+            failwith "Tipo de caso no válido"
+    
+        let responseJson = sendRequestToServer serverIP serverPort request
+        responseJson
 
